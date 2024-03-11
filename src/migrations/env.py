@@ -8,6 +8,7 @@ from alembic import context
 from database.config import settings
 from database.database import Base
 from auth.models import User
+from paste.models import Paste
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
