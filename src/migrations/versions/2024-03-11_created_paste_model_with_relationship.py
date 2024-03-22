@@ -24,7 +24,6 @@ def upgrade() -> None:
         sa.Column('hash', sa.String(length=6), nullable=False),
         sa.Column('uri', sa.String(length=256), nullable=False),
         sa.Column('created_at', sa.DateTime(), server_default=sa.text("TIMEZONE('utc', now())"), nullable=False),
-        sa.Column('expired_at', sa.DateTime(), nullable=True),
         sa.Column('user_id', sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(['user_id'], ['user.id'], ondelete='CASCADE'),
         sa.PrimaryKeyConstraint('hash'),

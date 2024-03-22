@@ -15,7 +15,6 @@ class Paste(Base):
     uri: Mapped[str] = mapped_column(String(256), unique=True)
 
     created_at: Mapped[datetime] = mapped_column(server_default=text("TIMEZONE('utc', now())"))
-    expired_at: Mapped[datetime] = mapped_column(nullable=True)
 
     user_id: Mapped[int] = mapped_column(ForeignKey('user.id', ondelete='CASCADE'))
     user: Mapped['User'] = relationship(back_populates='pastes')
