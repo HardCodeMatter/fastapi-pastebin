@@ -1,22 +1,23 @@
-from fastapi import HTTPException
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .schemas import PasteCreate
 from .models import Paste
+from .exceptions import PasteAlreadyExist
 
 
 class PasteService:
     @staticmethod
     async def create_paste(data: PasteCreate, session: AsyncSession):
-        try:
-            paste = Paste(**data.model_dump())
+        paste = await session.execute(
+            select(Paste).filter(Paste.hash == data.hash)
+        )
+        if paste:
+            raise PasteAlreadyExist()
 
-            session.add(paste)
-            await session.commit()
+        new_paste = Paste(**data.model_dump())
 
-            return paste
-        except Exception as e:
-            raise HTTPException(status_code=500, detail={
-                'status': 'error',
-                'detail': e,
-            })
+        session.add(new_paste)
+        await session.commit()
+
+        return new_paste
