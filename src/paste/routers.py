@@ -5,6 +5,8 @@ from database.database import get_async_session
 from .schemas import PasteCreate    
 from .services import PasteService
 from .exceptions import PasteAlreadyExist
+from auth.models import User
+from auth.manager import current_active_user
 
 
 router = APIRouter(
@@ -13,10 +15,14 @@ router = APIRouter(
 )
 
 
-@router.post('/create', response_model=PasteCreate)
+@router.post(
+    '/create',
+    response_model=PasteCreate,
+    dependencies=[Depends(current_active_user)],
+)
 async def create_paste(
     data: PasteCreate,
-    session: AsyncSession = Depends(get_async_session)
+    session: AsyncSession = Depends(get_async_session),
 ):
     try:
         return await PasteService.create_paste(data, session)
